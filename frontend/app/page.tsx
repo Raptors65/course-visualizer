@@ -1,6 +1,6 @@
 "use client";
 
-import ForceGraph, {
+import {
   ForceGraphMethods,
   LinkObject,
   NodeObject,
@@ -10,6 +10,11 @@ import coursesData from "../data/courses-data.json";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { MutableRefObject, useCallback, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+
+const ForceGraph = dynamic(() => import("react-force-graph-3d"), {
+  ssr: false,
+});
 
 export default function Home() {
   const [focusedCourse, setFocusedCourse] = useState("");
@@ -81,6 +86,7 @@ export default function Home() {
         <SidebarTrigger />
         <ForceGraph
           graphData={coursesData}
+          // @ts-expect-error temp
           nodeAutoColorBy={(node) => node.id.match(/[a-zA-Z]+/)![0]}
           nodeLabel={(node) => `${node.id} - ${node.name}`}
           linkDirectionalArrowLength={3.5}
@@ -88,6 +94,7 @@ export default function Home() {
           linkCurvature={0.25}
           // @ts-expect-error won't be null
           ref={fgRef}
+          // @ts-expect-error temp
           onNodeClick={focusNode}
         />
       </main>
