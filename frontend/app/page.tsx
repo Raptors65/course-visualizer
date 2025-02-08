@@ -14,16 +14,10 @@ import { MutableRefObject, useCallback, useRef, useState } from "react";
 export default function Home() {
   const [focusedCourse, setFocusedCourse] = useState("");
 
-  const fgRef: MutableRefObject<
-    | ForceGraphMethods<
-        NodeObject<{ id: string; name: string }>,
-        LinkObject<
-          { id: string; name: string },
-          { source: string; target: string }
-        >
-      >
-    | undefined
-  > = useRef(null);
+  const fgRef: MutableRefObject<ForceGraphMethods<
+    NodeObject<{ id: string; name: string }>,
+    LinkObject<{ id: string; name: string }, { source: string; target: string }>
+  > | null> = useRef(null);
 
   const focusNode = useCallback(
     (
@@ -45,7 +39,7 @@ export default function Home() {
 
       fgRef.current!.cameraPosition(
         { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
-        node, // lookAt ({ x, y, z })
+        { x: node.x, y: node.y, z: node.z }, // lookAt ({ x, y, z })
         3000 // ms transition duration
       );
     },
@@ -72,7 +66,7 @@ export default function Home() {
 
     fgRef.current!.cameraPosition(
       { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
-      node, // lookAt ({ x, y, z })
+      { x: node.x, y: node.y, z: node.z }, // lookAt ({ x, y, z })
       3000 // ms transition duration
     );
   };
@@ -92,6 +86,7 @@ export default function Home() {
           linkDirectionalArrowLength={3.5}
           linkDirectionalArrowRelPos={1}
           linkCurvature={0.25}
+          // @ts-expect-error won't be null
           ref={fgRef}
           onNodeClick={focusNode}
         />
