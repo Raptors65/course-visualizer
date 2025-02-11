@@ -7,10 +7,9 @@ import {
 } from "react-force-graph-3d";
 
 import coursesData from "../data/courses-data.json";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
 import { MutableRefObject, useCallback, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import SearchBar from "@/components/search-bar";
 
 const ForceGraph = dynamic(() => import("react-force-graph-3d"), {
   ssr: false,
@@ -77,27 +76,25 @@ export default function Home() {
   };
 
   return (
-    <SidebarProvider>
-      <AppSidebar
-        focusedCourse={focusedCourse}
+    <main>
+      <SearchBar
+        courses={coursesData.nodes}
         onCourseSelect={handleSelectedCourse}
       />
-      <main>
-        <SidebarTrigger />
-        <ForceGraph
-          graphData={coursesData}
-          // @ts-expect-error temp
-          nodeAutoColorBy={(node) => node.id.match(/[a-zA-Z]+/)![0]}
-          nodeLabel={(node) => `${node.id} - ${node.name}`}
-          linkDirectionalArrowLength={3.5}
-          linkDirectionalArrowRelPos={1}
-          linkCurvature={0.25}
-          // @ts-expect-error won't be null
-          ref={fgRef}
-          // @ts-expect-error temp
-          onNodeClick={focusNode}
-        />
-      </main>
-    </SidebarProvider>
+      <ForceGraph
+        graphData={coursesData}
+        // @ts-expect-error temp
+        nodeAutoColorBy={(node) => node.id.match(/[a-zA-Z]+/)![0]}
+        nodeLabel={(node) => `${node.id} - ${node.name}`}
+        linkDirectionalArrowLength={3.5}
+        linkDirectionalArrowRelPos={1}
+        linkCurvature={0.25}
+        // @ts-expect-error won't be null
+        ref={fgRef}
+        // @ts-expect-error temp
+        onNodeClick={focusNode}
+        enableNodeDrag={false}
+      />
+    </main>
   );
 }
