@@ -7,10 +7,10 @@ import {
 } from "react-force-graph-3d";
 
 import coursesData from "../data/courses-data.json";
-import { MutableRefObject, useCallback, useRef, useState } from "react";
+import { RefObject, useCallback, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import * as THREE from "three";
-import tinyColor, { ColorInput } from "tinycolor2";
+import tinyColor, { type ColorInput } from "tinycolor2";
 import SearchBar from "@/components/search-bar";
 import { Node } from "@/lib/types";
 
@@ -18,16 +18,18 @@ const ForceGraph = dynamic(() => import("react-force-graph-3d"), {
   ssr: false,
 });
 
-// @ts-ignore
-const colorStr2Hex = (str) =>
-  isNaN(str) ? parseInt(tinyColor(str).toHex(), 16) : str;
+const val = 1;
+const nodeRelSize = 4;
+const nodeResolution = 8;
+
+const colorStr2Hex = (str: ColorInput | number) =>
+  typeof str !== "number" ? parseInt(tinyColor(str).toHex(), 16) : str;
 
 export default function Home() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [focusedCourse, setFocusedCourse] = useState<Node | null>(null);
   const [search, setSearch] = useState("");
 
-  const fgRef: MutableRefObject<ForceGraphMethods<
+  const fgRef: RefObject<ForceGraphMethods<
     NodeObject<{ id: string; name: string }>,
     LinkObject<{ id: string; name: string }, { source: string; target: string }>
   > | null> = useRef(null);
@@ -49,6 +51,9 @@ export default function Home() {
       if (node.x === undefined || node.y === undefined || node.z === undefined)
         return;
 
+      setSearch(`${node.id} - ${node.name}`);
+      setFocusedCourse({ id: node.id as string, name: node.name as string });
+
       // Aim at node from outside it
       const distance = 100;
       const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
@@ -63,13 +68,10 @@ export default function Home() {
   );
 
   const handleSelectedCourse = (course: Node | null) => {
-    setFocusedCourse(course);
-
     if (course === null) {
+      setFocusedCourse(null);
       return;
     }
-
-    setSearch(`${course.id} - ${course.name}`);
 
     const node = coursesData.nodes.find(
       (node) => node.id === course.id
@@ -97,12 +99,18 @@ export default function Home() {
       fy?: number | undefined;
       fz?: number | undefined;
     }) => {
-      const radius = Math.cbrt(1) * 4;
-      // console.log(node);
+      const radius = Math.cbrt(val) * nodeRelSize;
+      const numSegments = nodeResolution;
 
-      const geometry = new THREE.SphereGeometry(radius, 20, 20);
+      const geometry = new THREE.SphereGeometry(
+        radius,
+        numSegments,
+        numSegments
+      );
       const material = new THREE.MeshLambertMaterial({
-        color: new THREE.Color(colorStr2Hex(node.color || "#ffffaa")),
+        color: new THREE.Color(
+          colorStr2Hex((node.color as number | string) || "#ffffaa")
+        ),
         transparent: true,
         opacity:
           focusedCourse === null || node.id === focusedCourse.id ? 0.75 : 0.3,
