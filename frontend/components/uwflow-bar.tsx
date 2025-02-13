@@ -34,7 +34,7 @@ export default function UWFlowBar({ value, title }: UWFlowBarProps) {
         <XAxis type="number" hide={true} />
         <YAxis dataKey="name" type="category" hide={true} />
         <Bar dataKey="value" stackId="a" fill="hsl(var(--chart-1))" />
-        <Bar dataKey="complement" stackId="a" fill="#000000">
+        <Bar dataKey="complement" stackId="a" fill="hsl(var(--muted))">
           <LabelList
             dataKey="label"
             position="right"

@@ -13,6 +13,7 @@ import UWFlowDonut from "./uwflow-donut";
 import { X } from "lucide-react";
 import UWFlowBar from "./uwflow-bar";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 interface SearchBarProps {
   courses: Node[];
@@ -122,9 +123,18 @@ export default function SearchBar({
           <div className="flex flex-col justify-center gap-y-3 w-2/3">
             <UWFlowBar value={courseRating.easy} title="Easy" />
             <UWFlowBar value={courseRating.useful} title="Useful" />
-            <span className="text-xs text-muted-foreground">
-              {courseRating.filled_count} ratings
-            </span>
+            <div className="flex justify-between">
+              <span className="text-xs text-muted-foreground">
+                {courseRating.filled_count} ratings
+              </span>
+              <Link
+                href={`https://uwflow.com/course/${selectedCourse!.id.toLowerCase()}`}
+                className="underline text-xs text-muted-foreground"
+                target="_blank"
+              >
+                UW Flow
+              </Link>
+            </div>
           </div>
         </div>
       )}

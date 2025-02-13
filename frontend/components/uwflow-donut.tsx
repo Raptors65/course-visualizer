@@ -15,7 +15,7 @@ export default function UWFlowDonut({ value, title }: UWFlowDonutProps) {
             value: value,
             fill: "hsl(var(--chart-1))",
           },
-          { name: "", value: 1 - value, fill: "#000000" },
+          { name: "", value: 1 - value, fill: "hsl(var(--muted))" },
         ]}
         dataKey="value"
         nameKey="name"
