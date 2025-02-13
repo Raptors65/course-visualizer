@@ -13,7 +13,6 @@ import * as THREE from "three";
 import tinyColor, { type ColorInput } from "tinycolor2";
 import SearchBar from "@/components/search-bar";
 import { Node } from "@/lib/types";
-import { Viewport } from "next";
 
 const ForceGraph = dynamic(() => import("react-force-graph-3d"), {
   ssr: false,
