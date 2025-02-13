@@ -127,13 +127,15 @@ export default function SearchBar({
               <span className="text-xs text-muted-foreground">
                 {courseRating.filled_count} ratings
               </span>
-              <Link
-                href={`https://uwflow.com/course/${selectedCourse!.id.toLowerCase()}`}
-                className="underline text-xs text-muted-foreground"
-                target="_blank"
-              >
-                UW Flow
-              </Link>
+              {selectedCourse !== null && (
+                <Link
+                  href={`https://uwflow.com/course/${selectedCourse!.id.toLowerCase()}`}
+                  className="underline text-xs text-muted-foreground"
+                  target="_blank"
+                >
+                  UW Flow
+                </Link>
+              )}
             </div>
           </div>
         </div>
