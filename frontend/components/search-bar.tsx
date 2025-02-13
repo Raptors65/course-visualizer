@@ -79,7 +79,7 @@ export default function SearchBar({
 
   return (
     <div className="absolute top-0 left-0 ml-5 mt-5 z-10 w-[calc(100vw-2.5rem)] sm:w-96 h-fit bg-background">
-      <Command shouldFilter={false}>
+      <Command shouldFilter={false} className="h-fit">
         <div className="relative">
           <CommandInput
             value={search}
@@ -88,7 +88,7 @@ export default function SearchBar({
             className={cn({ "mr-8": selectedCourse !== null })}
           />
           <button
-            className={cn("absolute top-[calc(50%-0.75rem)] right-2", {
+            className={cn("absolute top-[calc(50%-0.75rem)] right-2 z-30", {
               hidden: selectedCourse === null,
             })}
             onClick={handleClearSearch}
