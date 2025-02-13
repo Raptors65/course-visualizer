@@ -10,15 +10,23 @@ import { useEffect, useState } from "react";
 import { Node } from "@/lib/types";
 import { UWFlowRating } from "@/app/api/uwflow/route";
 import UWFlowDonut from "./uwflow-donut";
+import { X } from "lucide-react";
 
 interface SearchBarProps {
   courses: Node[];
-  onCourseSelect: (courseCode: string) => void;
+  onCourseSelect: (course: Node | null) => void;
+  selectedCourse: Node | null;
+  onSearchChange: (search: string) => void;
+  search: string;
 }
 
-export default function SearchBar({ courses, onCourseSelect }: SearchBarProps) {
-  const [search, setSearch] = useState("");
-  const [selectedCourse, setSelectedCourse] = useState<Node | null>(null);
+export default function SearchBar({
+  courses,
+  onCourseSelect,
+  selectedCourse,
+  search,
+  onSearchChange,
+}: SearchBarProps) {
   const [courseRating, setCourseRating] = useState<UWFlowRating | null>(null);
 
   const filter = (value: string, search: string) => {
@@ -30,15 +38,19 @@ export default function SearchBar({ courses, onCourseSelect }: SearchBarProps) {
   };
 
   const handleCourseSelect = (course: Node) => {
-    setSearch(`${course.id} - ${course.name}`);
-    setSelectedCourse(course);
-    onCourseSelect(course.id);
+    onSearchChange(`${course.id} - ${course.name}`);
+    onCourseSelect(course);
   };
 
   const handleValueChange = (value: string) => {
-    setSearch(value);
-    setSelectedCourse(null);
+    onSearchChange(value);
+    onCourseSelect(null);
     setCourseRating(null);
+  };
+
+  const handleClearSearch = () => {
+    onSearchChange("");
+    onCourseSelect(null);
   };
 
   useEffect(() => {
@@ -55,6 +67,8 @@ export default function SearchBar({ courses, onCourseSelect }: SearchBarProps) {
         const apiData = (await apiRes.json()) as UWFlowRating;
 
         setCourseRating(apiData);
+      } else {
+        setCourseRating(null);
       }
     };
 
@@ -64,11 +78,20 @@ export default function SearchBar({ courses, onCourseSelect }: SearchBarProps) {
   return (
     <div className="absolute top-5 left-5 z-10 w-96 h-fit bg-background">
       <Command shouldFilter={false}>
-        <CommandInput
-          value={search}
-          onValueChange={handleValueChange}
-          placeholder="Search for a course..."
-        />
+        <div className="relative">
+          <CommandInput
+            value={search}
+            onValueChange={handleValueChange}
+            placeholder="Search for a course..."
+            className="mr-8"
+          />
+          <button
+            className="absolute top-[calc(50%-0.75rem)] right-2"
+            onClick={handleClearSearch}
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </div>
         <CommandList hidden={search.length === 0 || selectedCourse !== null}>
           <CommandEmpty>No results found.</CommandEmpty>
           {courses
