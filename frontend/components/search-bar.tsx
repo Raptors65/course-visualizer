@@ -78,7 +78,7 @@ export default function SearchBar({
   }, [selectedCourse]);
 
   return (
-    <div className="absolute top-5 left-5 z-10 w-96 h-fit bg-background">
+    <div className="absolute top-0 left-0 ml-5 mt-5 z-10 w-[calc(100vw-2.5rem)] sm:w-96 h-fit bg-background">
       <Command shouldFilter={false}>
         <div className="relative">
           <CommandInput
@@ -119,7 +119,7 @@ export default function SearchBar({
       {courseRating !== null && (
         <div className="flex justify-center gap-x-5 p-2">
           <UWFlowDonut value={courseRating.liked} title="liked" />
-          <div className="flex flex-col justify-center gap-y-3">
+          <div className="flex flex-col justify-center gap-y-3 w-2/3">
             <UWFlowBar value={courseRating.easy} title="Easy" />
             <UWFlowBar value={courseRating.useful} title="Useful" />
             <span className="text-xs text-muted-foreground">
