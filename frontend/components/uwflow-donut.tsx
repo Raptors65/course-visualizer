@@ -10,17 +10,22 @@ export default function UWFlowDonut({ value, title }: UWFlowDonutProps) {
     <PieChart width={120} height={120}>
       <Pie
         data={[
-          { name: "Liked", value: value },
+          {
+            name: title,
+            value: value,
+            fill: "hsl(var(--chart-1))",
+          },
           { name: "", value: 1 - value, fill: "#000000" },
         ]}
         dataKey="value"
         nameKey="name"
         cx="50%"
         cy="50%"
-        outerRadius={50}
-        innerRadius={40}
+        innerRadius={50}
+        outerRadius={60}
         startAngle={90}
         endAngle={450}
+        strokeWidth={0}
       />
       <text
         x={60}

@@ -11,6 +11,8 @@ import { Node } from "@/lib/types";
 import { UWFlowRating } from "@/app/api/uwflow/route";
 import UWFlowDonut from "./uwflow-donut";
 import { X } from "lucide-react";
+import UWFlowBar from "./uwflow-bar";
+import { cn } from "@/lib/utils";
 
 interface SearchBarProps {
   courses: Node[];
@@ -83,10 +85,12 @@ export default function SearchBar({
             value={search}
             onValueChange={handleValueChange}
             placeholder="Search for a course..."
-            className="mr-8"
+            className={cn({ "mr-8": selectedCourse !== null })}
           />
           <button
-            className="absolute top-[calc(50%-0.75rem)] right-2"
+            className={cn("absolute top-[calc(50%-0.75rem)] right-2", {
+              hidden: selectedCourse === null,
+            })}
             onClick={handleClearSearch}
           >
             <X className="h-6 w-6" />
@@ -113,10 +117,15 @@ export default function SearchBar({
         </CommandList>
       </Command>
       {courseRating !== null && (
-        <div className="flex justify-center">
-          <UWFlowDonut value={courseRating.liked} title="Liked" />
-          <UWFlowDonut value={courseRating.easy} title="Easy" />
-          <UWFlowDonut value={courseRating.useful} title="Useful" />
+        <div className="flex justify-center gap-x-5 p-2">
+          <UWFlowDonut value={courseRating.liked} title="liked" />
+          <div className="flex flex-col justify-center gap-y-3">
+            <UWFlowBar value={courseRating.easy} title="Easy" />
+            <UWFlowBar value={courseRating.useful} title="Useful" />
+            <span className="text-xs text-muted-foreground">
+              {courseRating.filled_count} ratings
+            </span>
+          </div>
         </div>
       )}
     </div>
