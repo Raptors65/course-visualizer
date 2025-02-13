@@ -16,6 +16,7 @@ const ForceGraph = dynamic(() => import("react-force-graph-3d"), {
 });
 
 export default function Home() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [focusedCourse, setFocusedCourse] = useState("");
 
   const fgRef: MutableRefObject<ForceGraphMethods<
