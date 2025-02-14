@@ -179,7 +179,7 @@ export default function SearchBar({
                   .reduce((prev, cur) => [prev, ", ", cur])}
               </div>
             )}
-            {courseInfo.prereqs.length > 0 && (
+            {courseInfo.postreqs.length > 0 && (
               <div>
                 <span className="font-bold">Comes before:</span>{" "}
                 {courseInfo.postreqs
