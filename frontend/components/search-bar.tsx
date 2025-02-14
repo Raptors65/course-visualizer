@@ -165,31 +165,33 @@ export default function SearchBar({
           <div className="flex gap-y-2 flex-col p-2 text-xs">
             <div>
               <span className="font-bold">Comes after:</span>{" "}
-              {courseInfo.prereqs
-                .map<React.ReactNode>((prereq) => (
-                  <a
-                    key={prereq.id}
-                    onClick={() => handleCourseSelect(prereq)}
-                    className="hover:underline cursor-pointer"
-                  >
-                    {prereq.id}
-                  </a>
-                ))
-                .reduce((prev, cur) => [prev, ", ", cur])}
+              {courseInfo.prereqs.length > 0 &&
+                courseInfo.prereqs
+                  .map<React.ReactNode>((prereq) => (
+                    <a
+                      key={prereq.id}
+                      onClick={() => handleCourseSelect(prereq)}
+                      className="hover:underline cursor-pointer"
+                    >
+                      {prereq.id}
+                    </a>
+                  ))
+                  .reduce((prev, cur) => [prev, ", ", cur])}
             </div>
             <div>
               <span className="font-bold">Comes before:</span>{" "}
-              {courseInfo.postreqs
-                .map<React.ReactNode>((postreq) => (
-                  <a
-                    key={postreq.id}
-                    onClick={() => handleCourseSelect(postreq)}
-                    className="hover:underline cursor-pointer"
-                  >
-                    {postreq.id}
-                  </a>
-                ))
-                .reduce((prev, cur) => [prev, ", ", cur])}
+              {courseInfo.postreqs.length > 0 &&
+                courseInfo.postreqs
+                  .map<React.ReactNode>((postreq) => (
+                    <a
+                      key={postreq.id}
+                      onClick={() => handleCourseSelect(postreq)}
+                      className="hover:underline cursor-pointer"
+                    >
+                      {postreq.id}
+                    </a>
+                  ))
+                  .reduce((prev, cur) => [prev, ", ", cur])}
             </div>
           </div>
         </>
