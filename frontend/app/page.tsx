@@ -22,6 +22,8 @@ const val = 1;
 const nodeRelSize = 4;
 const nodeResolution = 8;
 
+const CAMERA_DISTANCE2NODES_FACTOR = 170;
+
 const colorStr2Hex = (str: ColorInput | number) =>
   typeof str !== "number" ? parseInt(tinyColor(str).toHex(), 16) : str;
 
@@ -69,7 +71,20 @@ export default function Home() {
 
   const handleSelectedCourse = (course: Node | null) => {
     if (course === null) {
-      setFocusedCourse(null);
+      if (focusedCourse !== null) {
+        setFocusedCourse(null);
+        fgRef.current!.cameraPosition(
+          {
+            x: 0,
+            y: 0,
+            z:
+              Math.cbrt(coursesData.nodes.length) *
+              CAMERA_DISTANCE2NODES_FACTOR,
+          },
+          { x: 0, y: 0, z: 0 },
+          3000
+        );
+      }
       return;
     }
 
