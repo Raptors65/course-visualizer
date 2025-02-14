@@ -163,10 +163,10 @@ export default function SearchBar({
             </div>
           </div>
           <div className="flex gap-y-2 flex-col p-2 text-xs">
-            <div>
-              <span className="font-bold">Comes after:</span>{" "}
-              {courseInfo.prereqs.length > 0 &&
-                courseInfo.prereqs
+            {courseInfo.prereqs.length > 0 && (
+              <div>
+                <span className="font-bold">Comes after:</span>{" "}
+                {courseInfo.prereqs
                   .map<React.ReactNode>((prereq) => (
                     <a
                       key={prereq.id}
@@ -177,11 +177,12 @@ export default function SearchBar({
                     </a>
                   ))
                   .reduce((prev, cur) => [prev, ", ", cur])}
-            </div>
-            <div>
-              <span className="font-bold">Comes before:</span>{" "}
-              {courseInfo.postreqs.length > 0 &&
-                courseInfo.postreqs
+              </div>
+            )}
+            {courseInfo.prereqs.length > 0 && (
+              <div>
+                <span className="font-bold">Comes before:</span>{" "}
+                {courseInfo.postreqs
                   .map<React.ReactNode>((postreq) => (
                     <a
                       key={postreq.id}
@@ -192,7 +193,8 @@ export default function SearchBar({
                     </a>
                   ))
                   .reduce((prev, cur) => [prev, ", ", cur])}
-            </div>
+              </div>
+            )}
           </div>
         </>
       )}
