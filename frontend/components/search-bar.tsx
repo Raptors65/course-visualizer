@@ -7,7 +7,7 @@ import {
   CommandList,
 } from "./ui/command";
 import { useEffect, useState } from "react";
-import { Node } from "@/lib/types";
+import { Link as CourseLink, Node } from "@/lib/types";
 import { UWFlowRating } from "@/app/api/uwflow/route";
 import UWFlowDonut from "./uwflow-donut";
 import { X } from "lucide-react";
@@ -17,11 +17,18 @@ import Link from "next/link";
 
 interface SearchBarProps {
   courses: Node[];
+  links: CourseLink[];
   onCourseSelect: (course: Node | null) => void;
   selectedCourse: Node | null;
   onSearchChange: (search: string) => void;
   search: string;
 }
+
+type CourseInfo = {
+  rating: UWFlowRating;
+  prereqs: Node[];
+  postreqs: Node[];
+};
 
 export default function SearchBar({
   courses,
@@ -29,8 +36,9 @@ export default function SearchBar({
   selectedCourse,
   search,
   onSearchChange,
+  links,
 }: SearchBarProps) {
-  const [courseRating, setCourseRating] = useState<UWFlowRating | null>(null);
+  const [courseInfo, setCourseInfo] = useState<CourseInfo | null>(null);
 
   const filter = (value: string, search: string) => {
     return search.length > 0 ? commandScore(value, search, []) : 0;
@@ -48,7 +56,7 @@ export default function SearchBar({
   const handleValueChange = (value: string) => {
     onSearchChange(value);
     onCourseSelect(null);
-    setCourseRating(null);
+    setCourseInfo(null);
   };
 
   const handleClearSearch = () => {
@@ -68,15 +76,29 @@ export default function SearchBar({
         );
 
         const apiData = (await apiRes.json()) as UWFlowRating;
+        // Needed because the force graph mutates links
+        const fullLinks = links as unknown as { source: Node; target: Node }[];
+        const prereqs = fullLinks
+          .filter((link) => link.target.id === selectedCourse.id)
+          .map(
+            (link) => courses.find((course) => course.id === link.source.id)!
+          );
+        const postreqs = fullLinks
+          .filter((link) => link.source.id === selectedCourse.id)
+          .map(
+            (link) => courses.find((course) => course.id === link.target.id)!
+          );
 
-        setCourseRating(apiData);
+        console.log(links);
+
+        setCourseInfo({ rating: apiData, prereqs, postreqs });
       } else {
-        setCourseRating(null);
+        setCourseInfo(null);
       }
     };
 
     fetchUwFlowData();
-  }, [selectedCourse]);
+  }, [selectedCourse, courses, links]);
 
   return (
     <div className="absolute top-0 left-0 ml-5 mt-5 z-10 w-[calc(100vw-2.5rem)] sm:w-96 h-fit bg-background">
@@ -117,28 +139,60 @@ export default function SearchBar({
             ))}
         </CommandList>
       </Command>
-      {courseRating !== null && (
-        <div className="flex justify-center gap-x-5 p-2">
-          <UWFlowDonut value={courseRating.liked} title="liked" />
-          <div className="flex flex-col justify-center gap-y-3 w-2/3">
-            <UWFlowBar value={courseRating.easy} title="Easy" />
-            <UWFlowBar value={courseRating.useful} title="Useful" />
-            <div className="flex justify-between">
-              <span className="text-xs text-muted-foreground">
-                {courseRating.filled_count} ratings
-              </span>
-              {selectedCourse !== null && (
-                <Link
-                  href={`https://uwflow.com/course/${selectedCourse!.id.toLowerCase()}`}
-                  className="underline text-xs text-muted-foreground"
-                  target="_blank"
-                >
-                  UW Flow
-                </Link>
-              )}
+      {courseInfo !== null && (
+        <>
+          <div className="flex justify-center gap-x-5 p-2">
+            <UWFlowDonut value={courseInfo.rating.liked} title="liked" />
+            <div className="flex flex-col justify-center gap-y-3 w-2/3">
+              <UWFlowBar value={courseInfo.rating.easy} title="Easy" />
+              <UWFlowBar value={courseInfo.rating.useful} title="Useful" />
+              <div className="flex justify-between">
+                <span className="text-xs text-muted-foreground">
+                  {courseInfo.rating.filled_count} ratings
+                </span>
+                {selectedCourse !== null && (
+                  <Link
+                    href={`https://uwflow.com/course/${selectedCourse!.id.toLowerCase()}`}
+                    className="underline text-xs text-muted-foreground"
+                    target="_blank"
+                  >
+                    UW Flow
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+          <div className="flex gap-y-2 flex-col p-2 text-xs">
+            <div>
+              <span className="font-bold">Comes after:</span>{" "}
+              {courseInfo.prereqs
+                .map<React.ReactNode>((prereq) => (
+                  <a
+                    key={prereq.id}
+                    onClick={() => handleCourseSelect(prereq)}
+                    className="hover:underline cursor-pointer"
+                  >
+                    {prereq.id}
+                  </a>
+                ))
+                .reduce((prev, cur) => [prev, ", ", cur])}
+            </div>
+            <div>
+              <span className="font-bold">Comes before:</span>{" "}
+              {courseInfo.postreqs
+                .map<React.ReactNode>((postreq) => (
+                  <a
+                    key={postreq.id}
+                    onClick={() => handleCourseSelect(postreq)}
+                    className="hover:underline cursor-pointer"
+                  >
+                    {postreq.id}
+                  </a>
+                ))
+                .reduce((prev, cur) => [prev, ", ", cur])}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

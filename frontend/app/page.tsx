@@ -141,6 +141,7 @@ export default function Home() {
     <main>
       <SearchBar
         courses={coursesData.nodes}
+        links={coursesData.links}
         onCourseSelect={handleSelectedCourse}
         selectedCourse={focusedCourse}
         search={search}
