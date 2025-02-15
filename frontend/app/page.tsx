@@ -30,6 +30,7 @@ const colorStr2Hex = (str: ColorInput | number) =>
 export default function Home() {
   const [focusedCourse, setFocusedCourse] = useState<Node | null>(null);
   const [search, setSearch] = useState("");
+  const [isEngineRunning, setIsEngineRunning] = useState(true);
 
   const fgRef: RefObject<ForceGraphMethods<
     NodeObject<{ id: string; name: string }>,
@@ -146,6 +147,7 @@ export default function Home() {
         selectedCourse={focusedCourse}
         search={search}
         onSearchChange={setSearch}
+        isLoading={isEngineRunning}
       />
       <ForceGraph
         graphData={coursesData}
@@ -160,6 +162,7 @@ export default function Home() {
         onNodeClick={focusNode}
         enableNodeDrag={false}
         nodeThreeObject={getThreeObject}
+        onEngineStop={() => setIsEngineRunning(false)}
       />
     </main>
   );
