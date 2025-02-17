@@ -32,10 +32,9 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [isEngineRunning, setIsEngineRunning] = useState(true);
 
-  const fgRef: RefObject<ForceGraphMethods<
-    NodeObject<{ id: string; name: string }>,
-    LinkObject<{ id: string; name: string }, { source: string; target: string }>
-  > | null> = useRef(null);
+  const fgRef: RefObject<
+    ForceGraphMethods<NodeObject, LinkObject> | undefined
+  > = useRef(undefined);
 
   const focusNode = useCallback(
     (node: {
@@ -151,13 +150,11 @@ export default function Home() {
       />
       <ForceGraph
         graphData={coursesData}
-        // @ts-expect-error temp
-        nodeAutoColorBy={(node) => node.id.match(/[a-zA-Z]+/)![0]}
+        nodeAutoColorBy={(node) => (node.id as string).match(/[a-zA-Z]+/)![0]}
         nodeLabel={(node) => `${node.id} - ${node.name}`}
         linkDirectionalArrowLength={3.5}
         linkDirectionalArrowRelPos={1}
         linkCurvature={0.25}
-        // @ts-expect-error won't be null
         ref={fgRef}
         onNodeClick={focusNode}
         enableNodeDrag={false}
