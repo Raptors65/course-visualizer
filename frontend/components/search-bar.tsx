@@ -155,7 +155,7 @@ export default function SearchBar({
             </CommandList>
           </Command>
           {courseInfo !== null && (
-            <>
+            <div className="border border-t-0">
               <div className="flex justify-center gap-x-5 p-2">
                 <UWFlowDonut value={courseInfo.rating.liked} title="liked" />
                 <div className="flex flex-col justify-center gap-y-3 w-2/3">
@@ -211,7 +211,7 @@ export default function SearchBar({
                   </div>
                 )}
               </div>
-            </>
+            </div>
           )}
         </>
       )}
